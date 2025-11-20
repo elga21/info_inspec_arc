@@ -1,0 +1,239 @@
+:root {
+    /* TAMAÑO BASE PARA PC (441px x 331px) */
+    --cell-width-px: 441px;
+    --cell-height-px: 331px;
+    --cell-count: 5; /* CONFIGURADO PARA 5 CELDAS */
+    --cell-border-radius: 15px;
+
+    /* ÁNGULO RECALCULADO PARA 5 PÁGINAS (360/5 = 72 grados) */
+    --rotation-angle: calc(360deg / var(--cell-count));
+
+    /* CÁLCULO CRÍTICO DEL RADIO (APOTEMA) */
+    --apotema: calc( (var(--cell-width-px) / 2) / tan(180deg / var(--cell-count)) );
+    --radius: var(--apotema);
+
+    /* Variables para la animación de Aura */
+    --aura-color-1: #3b82f6; /* Azul */
+    --aura-color-2: #8b5cf6; /* Morado */
+    --aura-color-3: #10b981; /* Verde */
+}
+
+/* Definición de la animación de cambio de color */
+@keyframes color-shift {
+    0% { box-shadow: 0 0 20px var(--aura-color-1), 0 0 40px var(--aura-color-1); }
+    33% { box-shadow: 0 0 20px var(--aura-color-2), 0 0 40px var(--aura-color-2); }
+    66% { box-shadow: 0 0 20px var(--aura-color-3), 0 0 40px var(--aura-color-3); }
+    100% { box-shadow: 0 0 20px var(--aura-color-1), 0 0 40px var(--aura-color-1); }
+}
+
+/* Estilos Generales y Responsive */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #0d1117;
+    color: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.header-title {
+    position: relative;
+    z-index: 20;
+    margin-bottom: 100px;
+    text-align: center;
+    font-size: 1.1em;
+    color: #3b82f6;
+    max-width: 90%;
+}
+
+.main-container {
+    position: relative;
+    z-index: 10;
+    width: 84vw;
+    height: 84vw;
+    max-width: var(--cell-width-px);
+    max-height: var(--cell-height-px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    --current-width: var(--cell-width-px);
+    transform: scale(calc(var(--current-width) / var(--cell-width-px)));
+}
+
+.scene {
+    width: var(--cell-width-px);
+    height: var(--cell-height-px);
+    perspective: 1000px;
+}
+
+.carousel {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease-in-out;
+}
+
+/* Caras/Celdas del Carrusel */
+.carousel__cell {
+    position: absolute;
+    z-index: 1;
+    width: var(--cell-width-px);
+    height: var(--cell-height-px);
+
+    border: 2px solid var(--aura-color-1);
+    border-radius: var(--cell-border-radius);
+    background: rgba(18, 26, 40, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    backface-visibility: hidden;
+
+    /* APLICACIÓN DEL AURA CON ANIMACIÓN (4 segundos) */
+    box-shadow: 0 0 20px var(--aura-color-1), 0 0 40px var(--aura-color-1);
+    animation: color-shift 4s infinite alternate;
+
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* Posicionamiento de cada cara (PARA 5 CELDAS) */
+.carousel__cell:nth-child(1) { transform: rotateY(calc(var(--rotation-angle) * 0)) translateZ(var(--radius)); }
+.carousel__cell:nth-child(2) { transform: rotateY(calc(var(--rotation-angle) * 1)) translateZ(var(--radius)); }
+.carousel__cell:nth-child(3) { transform: rotateY(calc(var(--rotation-angle) * 2)) translateZ(var(--radius)); }
+.carousel__cell:nth-child(4) { transform: rotateY(calc(var(--rotation-angle) * 3)) translateZ(var(--radius)); }
+.carousel__cell:nth-child(5) { transform: rotateY(calc(var(--rotation-angle) * 4)) translateZ(var(--radius)); }
+
+
+/* Estilos de Contenido Interno */
+.content-box {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 30; /* REFORZADO */
+}
+
+.content-box h2 {
+    color: #3b82f6;
+    border-bottom: 2px solid #1e3a8a;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.content-box p {
+    font-size: 0.8em;
+    line-height: 1.3;
+    margin: 5px 0;
+    text-align: justify;
+}
+
+.content-box strong {
+    color: #93c5fd;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Contenedor de enlace de imagen (clic) */
+.image-link {
+    display: block;
+    width: 100%;
+    margin: 0;
+    position: relative;
+    z-index: 50; /* REFORZADO */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-image {
+    width: 100%;
+    max-height: 80%;
+    height: auto;
+
+    /* Margin superior de 10px, Margin inferior del 2% de la altura de la celda */
+    margin: 10px auto calc(var(--cell-height-px) * 0.02) auto;
+
+    border: 1px solid #3b82f6;
+    border-radius: 5px;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+}
+
+/* EFECTO HOVER ESTABLE: Aplicado al ENLACE (.image-link) */
+.image-link:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+}
+
+
+/* Controles de Navegación */
+.controls {
+    position: relative;
+    z-index: 20;
+    margin-top: 100px;
+}
+
+.controls button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin: 0 6px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.85em;
+}
+
+/* ---------------------------------------------------------------------- */
+/* === MEDIA QUERIES PARA RESPONSIVIDAD (MÓVIL) === */
+/* ---------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .main-container {
+        width: 84vw;
+        height: 85vh;
+
+        --scale-factor-base: calc( (84vw - 40px) / var(--cell-width-px) );
+
+        transform: scale(calc(var(--scale-factor-base) * 0.90));
+        transform-origin: center center;
+    }
+
+    .controls {
+        transform: none;
+        margin-top: calc( (var(--cell-height-px) * var(--scale-factor-base) * 0.90) + 20px);
+    }
+}
+
+@media (max-width: 500px) {
+    .main-container {
+        width: 84vw;
+        height: 95vh;
+
+        --scale-factor-base-narrow: calc( (84vw - 40px) / var(--cell-width-px) );
+
+        transform: scale(calc(var(--scale-factor-base-narrow) * 0.90));
+    }
+
+    .header-title {
+        margin-bottom: 30px;
+        font-size: 1em;
+    }
+
+    .controls {
+        margin-top: calc( (var(--cell-height-px) * var(--scale-factor-base-narrow) * 0.90) + 30px);
+    }
+}
